@@ -13,7 +13,10 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 
 class StoryDesigner extends StatefulWidget {
-  StoryDesigner({Key key, this.filePath}) : super(key: key);
+  StoryDesigner({
+    Key key,
+    this.filePath,
+  }) : super(key: key);
 
   final String filePath;
 
@@ -160,7 +163,11 @@ class _StoryDesignerState extends State<StoryDesigner> {
                               child: Container(
                                 padding: currentTextStyle != 0
                                     ? EdgeInsets.only(
-                                        left: 7, right: 7, top: 5, bottom: 5)
+                                        left: 7,
+                                        right: 7,
+                                        top: 5,
+                                        bottom: 5,
+                                      )
                                     : EdgeInsets.all(0),
                                 decoration: currentTextStyle != 0
                                     ? BoxDecoration(
@@ -168,34 +175,36 @@ class _StoryDesignerState extends State<StoryDesigner> {
                                             ? Colors.black.withOpacity(1.0)
                                             : Colors.white.withOpacity(1.0),
                                         borderRadius: BorderRadius.all(
-                                            Radius.circular(4)))
+                                          Radius.circular(4),
+                                        ),
+                                      )
                                     : BoxDecoration(),
                                 child: TextField(
                                   autofocus: true,
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.getFont(
-                                          fontFamilyList[currentFontFamily])
-                                      .copyWith(
-                                          color: currentColor,
-                                          fontSize: currentFontSize),
+                                    fontFamilyList[currentFontFamily],
+                                  ).copyWith(
+                                    color: currentColor,
+                                    fontSize: currentFontSize,
+                                  ),
                                   cursorColor: currentColor,
                                   maxLines: 3,
                                   minLines: 1,
                                   decoration: InputDecoration(
                                     border: new UnderlineInputBorder(
-                                        borderSide: new BorderSide(
-                                      color: Colors.transparent,
-                                    )),
+                                      borderSide: new BorderSide(
+                                        color: Colors.transparent,
+                                      ),
+                                    ),
                                     focusedBorder: new UnderlineInputBorder(
-                                        borderSide: new BorderSide(
-                                      color: Colors.transparent,
-                                    )),
+                                      borderSide: new BorderSide(
+                                        color: Colors.transparent,
+                                      ),
+                                    ),
                                   ),
-                                  onChanged: (input) {
-                                    setState(() {
-                                      currentText = input;
-                                    });
-                                  },
+                                  onChanged: (input) =>
+                                      setState(() => currentText = input),
                                   onSubmitted: (input) {
                                     if (input.isNotEmpty) {
                                       setState(() {
@@ -209,9 +218,7 @@ class _StoryDesignerState extends State<StoryDesigner> {
                                         currentText = "";
                                       });
                                     } else {
-                                      setState(() {
-                                        currentText = "";
-                                      });
+                                      setState(() => currentText = "");
                                     }
 
                                     setState(() {
@@ -224,161 +231,158 @@ class _StoryDesignerState extends State<StoryDesigner> {
                             ),
                           ),
                           Positioned(
-                              top: 40,
-                              child: Container(
-                                width: screen.width,
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(Icons.color_lens_outlined,
-                                          color: Colors.white),
-                                      onPressed: () {
-                                        // raise the [showDialog] widget
-                                        showDialog(
-                                          context: context,
-                                          builder: (ctx) {
-                                            return AlertDialog(
-                                              title:
-                                                  const Text('Pick a color!'),
-                                              content: SingleChildScrollView(
-                                                child: ColorPicker(
-                                                  pickerColor: pickerColor,
-                                                  onColorChanged: (color) {
-                                                    setState(() {
-                                                      pickerColor = color;
-                                                    });
-                                                  },
-                                                  showLabel: true,
-                                                  pickerAreaHeightPercent: 0.8,
-                                                ),
+                            top: 40,
+                            child: Container(
+                              width: screen.width,
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.color_lens_outlined,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      // raise the [showDialog] widget
+                                      showDialog(
+                                        context: context,
+                                        builder: (ctx) {
+                                          return AlertDialog(
+                                            title: const Text('Pick a color!'),
+                                            content: SingleChildScrollView(
+                                              child: ColorPicker(
+                                                pickerColor: pickerColor,
+                                                onColorChanged: (color) {
+                                                  setState(() {
+                                                    pickerColor = color;
+                                                  });
+                                                },
+                                                showLabel: true,
+                                                pickerAreaHeightPercent: 0.8,
                                               ),
-                                              actions: <Widget>[
-                                                FlatButton(
-                                                  child: const Text('Got it'),
-                                                  onPressed: () {
-                                                    setState(() =>
-                                                        currentColor =
-                                                            pickerColor);
-                                                    Navigator.of(ctx).pop();
-                                                  },
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        );
-                                      },
+                                            ),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: const Text('Got it'),
+                                                onPressed: () {
+                                                  setState(() => currentColor =
+                                                      pickerColor);
+                                                  Navigator.of(ctx).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: Container(
+                                      padding: currentTextStyle != 0
+                                          ? EdgeInsets.only(
+                                              left: 7,
+                                              right: 7,
+                                              top: 5,
+                                              bottom: 5,
+                                            )
+                                          : EdgeInsets.all(0),
+                                      decoration: currentTextStyle != 0
+                                          ? BoxDecoration(
+                                              color: currentTextStyle == 1
+                                                  ? Colors.black
+                                                      .withOpacity(1.0)
+                                                  : Colors.white
+                                                      .withOpacity(1.0),
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(4),
+                                              ),
+                                            )
+                                          : BoxDecoration(),
+                                      child: Icon(Icons.auto_awesome,
+                                          color: currentTextStyle != 2
+                                              ? Colors.white
+                                              : Colors.black),
                                     ),
-                                    IconButton(
-                                      icon: Container(
-                                          padding: currentTextStyle != 0
-                                              ? EdgeInsets.only(
-                                                  left: 7,
-                                                  right: 7,
-                                                  top: 5,
-                                                  bottom: 5)
-                                              : EdgeInsets.all(0),
-                                          decoration: currentTextStyle != 0
-                                              ? BoxDecoration(
-                                                  color: currentTextStyle == 1
-                                                      ? Colors.black
-                                                          .withOpacity(1.0)
-                                                      : Colors.white
-                                                          .withOpacity(1.0),
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(4)))
-                                              : BoxDecoration(),
-                                          child: Icon(Icons.auto_awesome,
-                                              color: currentTextStyle != 2
-                                                  ? Colors.white
-                                                  : Colors.black)),
-                                      onPressed: () {
-                                        if (currentTextStyle < 2) {
-                                          setState(() {
-                                            currentTextStyle++;
-                                          });
-                                        } else {
-                                          setState(() {
-                                            currentTextStyle = 0;
-                                          });
-                                        }
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              )),
+                                    onPressed: () {
+                                      if (currentTextStyle < 2) {
+                                        setState(() => currentTextStyle++);
+                                      } else {
+                                        setState(() => currentTextStyle = 0);
+                                      }
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                           Positioned(
-                              top: screen.height / 2 - 45,
-                              left: -120,
-                              child: Transform(
-                                alignment: FractionalOffset.center,
-                                // Rotate sliders by 90 degrees
-                                transform: new Matrix4.identity()
-                                  ..rotateZ(270 * 3.1415927 / 180),
-                                child: SizedBox(
-                                  width: 300,
-                                  child: Slider(
-                                      value: currentFontSize,
-                                      min: 14,
-                                      max: 74,
-                                      activeColor: Colors.white,
-                                      inactiveColor:
-                                          Colors.white.withOpacity(0.4),
-                                      onChanged: (input) {
-                                        setState(() {
-                                          currentFontSize = input;
-                                        });
-                                      }),
-                                ),
-                              )),
+                            top: screen.height / 2 - 45,
+                            left: -120,
+                            child: Transform(
+                              alignment: FractionalOffset.center,
+                              // Rotate sliders by 90 degrees
+                              transform: new Matrix4.identity()
+                                ..rotateZ(270 * 3.1415927 / 180),
+                              child: SizedBox(
+                                width: 300,
+                                child: Slider(
+                                    value: currentFontSize,
+                                    min: 14,
+                                    max: 74,
+                                    activeColor: Colors.white,
+                                    inactiveColor:
+                                        Colors.white.withOpacity(0.4),
+                                    onChanged: (input) => setState(
+                                        () => currentFontSize = input)),
+                              ),
+                            ),
+                          ),
                           Positioned(
-                              bottom: 50,
-                              left: screen.width / 6,
-                              child: Center(
-                                child: Container(
-                                  width: screen.width / 1.5,
-                                  height: 40,
-                                  alignment: Alignment.center,
-                                  child: ListView.builder(
-                                      itemCount: fontFamilyList.length,
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: (context, index) {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              currentFontFamily = index;
-                                            });
-                                          },
-                                          child: Container(
-                                            height: 40,
-                                            width: 40,
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                                color:
-                                                    index == currentFontFamily
-                                                        ? Colors.white
-                                                        : Colors.black,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(20))),
-                                            child: Text(
-                                              'Aa',
-                                              style: GoogleFonts.getFont(
-                                                      fontFamilyList[index])
-                                                  .copyWith(
-                                                      color: index ==
-                                                              currentFontFamily
-                                                          ? Colors.black
-                                                          : Colors.white),
+                            bottom: 50,
+                            left: screen.width / 6,
+                            child: Center(
+                              child: Container(
+                                width: screen.width / 1.5,
+                                height: 40,
+                                alignment: Alignment.center,
+                                child: ListView.builder(
+                                    itemCount: fontFamilyList.length,
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: (context, index) {
+                                      return GestureDetector(
+                                        onTap: () => setState(
+                                            () => currentFontFamily = index),
+                                        child: Container(
+                                          height: 40,
+                                          width: 40,
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            color: index == currentFontFamily
+                                                ? Colors.white
+                                                : Colors.black,
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(20),
                                             ),
                                           ),
-                                        );
-                                      }),
-                                ),
-                              )),
+                                          child: Text(
+                                            'Aa',
+                                            style: GoogleFonts.getFont(
+                                              fontFamilyList[index],
+                                            ).copyWith(
+                                              color: index == currentFontFamily
+                                                  ? Colors.black
+                                                  : Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -391,44 +395,53 @@ class _StoryDesignerState extends State<StoryDesigner> {
               child: Visibility(
                 visible: _activeItem == null,
                 child: Positioned(
-                    top: 50,
-                    right: 20,
-                    child: FlatButton(
-                      onPressed: () async {
-                        //done: save image and return captured image to previous screen
+                  top: 50,
+                  right: 20,
+                  child: TextButton(
+                    onPressed: () async {
+                      //done: save image and return captured image to previous screen
 
-                        RenderRepaintBoundary boundary =
-                            previewContainer.currentContext.findRenderObject();
-                        ui.Image image = await boundary.toImage();
-                        final directory =
-                            (await getApplicationDocumentsDirectory()).path;
-                        ByteData byteData = await image.toByteData(
-                            format: ui.ImageByteFormat.png);
-                        Uint8List pngBytes = byteData.buffer.asUint8List();
-                        print(pngBytes);
+                      RenderRepaintBoundary boundary =
+                          previewContainer.currentContext.findRenderObject();
+                      ui.Image image = await boundary.toImage();
+                      final directory =
+                          (await getApplicationDocumentsDirectory()).path;
+                      ByteData byteData = await image.toByteData(
+                          format: ui.ImageByteFormat.png);
+                      Uint8List pngBytes = byteData.buffer.asUint8List();
+                      print(pngBytes);
 
-                        File imgFile = new File(
-                            '$directory/' + DateTime.now().toString() + '.png');
-                        imgFile.writeAsBytes(pngBytes).then((value) {
-                          // done: return imgFile
-                          Navigator.of(context).pop(imgFile);
-                        });
-                      },
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      color: Colors.black.withOpacity(0.7),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Done',
-                            style: TextStyle(color: Colors.white, fontSize: 18),
+                      File imgFile = new File(
+                          '$directory/' + DateTime.now().toString() + '.png');
+                      imgFile.writeAsBytes(pngBytes).then((value) {
+                        // done: return imgFile
+                        Navigator.of(context).pop(imgFile);
+                      });
+                    },
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
                           ),
-                        ],
+                        ),
                       ),
-                    )),
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                        Colors.blue.withOpacity(0.7),
+                      ),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Done',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
             Visibility(

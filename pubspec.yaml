@@ -11,9 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  path_provider: ^1.6.24
-  flutter_colorpicker: ^0.3.4
-  google_fonts: ^1.1.1
+  path_provider: ^2.0.1
+  flutter_colorpicker: ^0.4.0
+  google_fonts: ^2.0.0
 
 
 
@@ -21,10 +21,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
-# The following section is specific to Flutter.
 flutter:
 
   # To add assets to your package, add an assets section, like this:
