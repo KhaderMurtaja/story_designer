@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -401,22 +402,26 @@ class _StoryDesignerState extends State<StoryDesigner> {
                     onPressed: () async {
                       //done: save image and return captured image to previous screen
 
-                      RenderRepaintBoundary boundary =
-                          previewContainer.currentContext.findRenderObject();
-                      ui.Image image = await boundary.toImage();
-                      final directory =
-                          (await getApplicationDocumentsDirectory()).path;
-                      ByteData byteData = await image.toByteData(
-                          format: ui.ImageByteFormat.png);
-                      Uint8List pngBytes = byteData.buffer.asUint8List();
-                      print(pngBytes);
-
-                      File imgFile = new File(
-                          '$directory/' + DateTime.now().toString() + '.png');
-                      imgFile.writeAsBytes(pngBytes).then((value) {
-                        // done: return imgFile
-                        Navigator.of(context).pop(imgFile);
+                      GallerySaver.saveImage(widget.filePath)
+                          .then((bool success) {
+                        Navigator.of(context).pop();
                       });
+                      // RenderRepaintBoundary boundary =
+                      //     previewContainer.currentContext.findRenderObject();
+                      // ui.Image image = await boundary.toImage();
+                      // final directory =
+                      //     (await getApplicationDocumentsDirectory()).path;
+                      // ByteData byteData = await image.toByteData(
+                      //     format: ui.ImageByteFormat.png);
+                      // Uint8List pngBytes = byteData.buffer.asUint8List();
+                      // print(pngBytes);
+
+                      // File imgFile = new File(
+                      //     '$directory/' + DateTime.now().toString() + '.png');
+                      // imgFile.writeAsBytes(pngBytes).then((value) {
+                      //   // done: return imgFile
+                      //   Navigator.of(context).pop(imgFile);
+                      // });
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -436,7 +441,10 @@ class _StoryDesignerState extends State<StoryDesigner> {
                       children: [
                         Text(
                           'Done',
-                          style: TextStyle(color: Colors.white, fontSize: 18),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
                         ),
                       ],
                     ),
