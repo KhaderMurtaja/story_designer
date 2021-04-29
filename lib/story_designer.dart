@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:gallery_saver/gallery_saver.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -399,30 +398,25 @@ class _StoryDesignerState extends State<StoryDesigner> {
                   top: 50,
                   right: 20,
                   child: TextButton(
-                    onPressed: () {
-                      print('000000000000000000 ${widget.filePath}');
-                      GallerySaver.saveImage(
-                        widget.filePath,
-                        albumName: 'Camera',
-                      ).then((bool success) {
-                        setState(() {});
-                      });
-                      // RenderRepaintBoundary boundary =
-                      //     previewContainer.currentContext.findRenderObject();
-                      // ui.Image image = await boundary.toImage();
-                      // final directory =
-                      //     (await getApplicationDocumentsDirectory()).path;
-                      // ByteData byteData = await image.toByteData(
-                      //     format: ui.ImageByteFormat.png);
-                      // Uint8List pngBytes = byteData.buffer.asUint8List();
-                      // print(pngBytes);
+                    onPressed: () async {
+                      //done: save image and return captured image to previous screen
 
-                      // File imgFile = new File(
-                      //     '$directory/' + DateTime.now().toString() + '.png');
-                      // imgFile.writeAsBytes(pngBytes).then((value) {
-                      //   // done: return imgFile
-                      //   Navigator.of(context).pop(imgFile);
-                      // });
+                      RenderRepaintBoundary boundary =
+                          previewContainer.currentContext.findRenderObject();
+                      ui.Image image = await boundary.toImage();
+                      final directory =
+                          (await getApplicationDocumentsDirectory()).path;
+                      ByteData byteData = await image.toByteData(
+                          format: ui.ImageByteFormat.png);
+                      Uint8List pngBytes = byteData.buffer.asUint8List();
+                      print(pngBytes);
+
+                      File imgFile = new File(
+                          '$directory/' + DateTime.now().toString() + '.png');
+                      imgFile.writeAsBytes(pngBytes).then((value) {
+                        // done: return imgFile
+                        Navigator.of(context).pop(imgFile);
+                      });
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -441,11 +435,8 @@ class _StoryDesignerState extends State<StoryDesigner> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Save',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                          ),
+                          'Done',
+                          style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                       ],
                     ),
