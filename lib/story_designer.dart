@@ -441,7 +441,7 @@ class _StoryDesignerState extends State<StoryDesigner> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Done',
+                          'Save',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,
