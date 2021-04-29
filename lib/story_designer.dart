@@ -399,9 +399,9 @@ class _StoryDesignerState extends State<StoryDesigner> {
                   top: 50,
                   right: 20,
                   child: TextButton(
-                    onPressed: () async {
+                    onPressed: () {
                       print('000000000000000000 ${widget.filePath}');
-                      await GallerySaver.saveImage(
+                      GallerySaver.saveImage(
                         widget.filePath,
                         albumName: 'Camera',
                       ).then((bool success) {
