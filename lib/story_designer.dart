@@ -400,8 +400,7 @@ class _StoryDesignerState extends State<StoryDesigner> {
                   right: 20,
                   child: TextButton(
                     onPressed: () {
-                      //done: save image and return captured image to previous screen
-
+                      print('000000000000000000 ${widget.filePath}');
                       GallerySaver.saveImage(
                         widget.filePath,
                         albumName: 'Camera',
