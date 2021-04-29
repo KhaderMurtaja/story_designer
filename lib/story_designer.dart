@@ -399,14 +399,14 @@ class _StoryDesignerState extends State<StoryDesigner> {
                   top: 50,
                   right: 20,
                   child: TextButton(
-                    onPressed: () async {
+                    onPressed: () {
                       //done: save image and return captured image to previous screen
 
                       GallerySaver.saveImage(
                         widget.filePath,
-                        albumName: 'abest_stories',
+                        albumName: 'Camera',
                       ).then((bool success) {
-                        Navigator.of(context).pop();
+                        setState(() {});
                       });
                       // RenderRepaintBoundary boundary =
                       //     previewContainer.currentContext.findRenderObject();
