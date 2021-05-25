@@ -123,6 +123,12 @@ class _StoryDesignerState extends State<StoryDesigner> {
                 _activeItem.scale = details.scale * _currentScale;
               });
             },
+            onTap: () {
+              setState(() {
+                isTextInput = !isTextInput;
+                _activeItem = null;
+              });
+            },
             child: Stack(
               children: [
                 RepaintBoundary(
