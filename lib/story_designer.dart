@@ -128,6 +128,19 @@ class _StoryDesignerState extends State<StoryDesigner> {
                 isTextInput = !isTextInput;
                 _activeItem = null;
               });
+
+              if (currentText.isNotEmpty) {
+                setState(() {
+                  stackData.add(EditableItem()
+                    ..type = ItemType.Text
+                    ..value = currentText
+                    ..color = currentColor
+                    ..textStyle = currentTextStyle
+                    ..fontSize = currentFontSize
+                    ..fontFamily = currentFontFamily);
+                  currentText = "";
+                });
+              }
             },
             child: Stack(
               children: [
