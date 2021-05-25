@@ -5,12 +5,15 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'dart:ui' as ui;
+
+import 'package:story_designer/widgets/go_back.dart';
 
 class StoryDesigner extends StatefulWidget {
   StoryDesigner({
@@ -116,25 +119,6 @@ class _StoryDesignerState extends State<StoryDesigner> {
             _activeItem.scale = details.scale * _currentScale;
           });
         },
-        onTap: () {
-          setState(() {
-            isTextInput = !isTextInput;
-            _activeItem = null;
-          });
-
-          if (currentText.isNotEmpty) {
-            setState(() {
-              stackData.add(EditableItem()
-                ..type = ItemType.Text
-                ..value = currentText
-                ..color = currentColor
-                ..textStyle = currentTextStyle
-                ..fontSize = currentFontSize
-                ..fontFamily = currentFontFamily);
-              currentText = "";
-            });
-          }
-        },
         child: Stack(
           children: [
             RepaintBoundary(
@@ -145,7 +129,11 @@ class _StoryDesignerState extends State<StoryDesigner> {
                   Visibility(
                     visible: stackData[0].type == ItemType.Image,
                     child: Center(
-                      child: Image.file(new File(stackData[0].value)),
+                      child: Image.file(
+                        new File(
+                          stackData[0].value,
+                        ),
+                      ),
                     ),
                   ),
                   ...stackData.map(_buildItemWidget).toList(),
@@ -390,76 +378,128 @@ class _StoryDesignerState extends State<StoryDesigner> {
                 ],
               ),
             ),
-            Visibility(
-              visible: !isTextInput,
-              child: Visibility(
-                visible: _activeItem == null,
-                child: Positioned(
-                  top: 50,
-                  right: 20,
-                  child: InkWell(
-                    onTap: () async {
-                      //done: save image and return captured image to previous screen
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  GoBack(),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      // زر المشاركة
+                      Visibility(
+                        visible: !isTextInput,
+                        child: Visibility(
+                          visible: _activeItem == null,
+                          child: InkWell(
+                            onTap: () async {
+                              //done: save image and return captured image to previous screen
 
-                      RenderRepaintBoundary boundary =
-                          previewContainer.currentContext.findRenderObject();
-                      ui.Image image = await boundary.toImage();
-                      final directory =
-                          (await getApplicationDocumentsDirectory()).path;
-                      ByteData byteData = await image.toByteData(
-                          format: ui.ImageByteFormat.png);
-                      Uint8List pngBytes = byteData.buffer.asUint8List();
-                      print(pngBytes);
+                              RenderRepaintBoundary boundary = previewContainer
+                                  .currentContext
+                                  .findRenderObject();
+                              ui.Image image = await boundary.toImage();
+                              final directory =
+                                  (await getApplicationDocumentsDirectory())
+                                      .path;
+                              ByteData byteData = await image.toByteData(
+                                  format: ui.ImageByteFormat.png);
+                              Uint8List pngBytes =
+                                  byteData.buffer.asUint8List();
+                              print(pngBytes);
 
-                      File imgFile = new File(
-                          '$directory/' + DateTime.now().toString() + '.png');
-                      imgFile.writeAsBytes(pngBytes).then((value) {
-                        // done: return imgFile
-                        Navigator.of(context).pop(imgFile);
-                      });
-                    },
-                    // style: ButtonStyle(
-                    //   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    //     RoundedRectangleBorder(
-                    //       borderRadius: BorderRadius.all(
-                    //         Radius.circular(10),
-                    //       ),
-                    //     ),
-                    //   ),
-                    //   backgroundColor: MaterialStateProperty.all<Color>(
-                    //     Colors.blue.withOpacity(0.7),
-                    //   ),
-                    // ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          alignment: Alignment.center,
-                          height: 40.0,
-                          width: 130,
-                          padding: EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            color: Color(0xFF0BCC83),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                          ),
-                          child: Text(
-                            'مشاركة',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                              File imgFile = new File('$directory/' +
+                                  DateTime.now().toString() +
+                                  '.png');
+                              imgFile.writeAsBytes(pngBytes).then((value) {
+                                // done: return imgFile
+                                Navigator.of(context).pop(imgFile);
+                              });
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  alignment: Alignment.center,
+                                  height: 40.0,
+                                  width: 130,
+                                  padding: EdgeInsets.all(5),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFF0BCC83),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'مشاركة',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      // إضافة نص
+                      Visibility(
+                        visible: !isTextInput,
+                        child: InkWell(
+                          child: Container(
+                            margin: EdgeInsets.only(top: 32),
+                            child: Row(
+                              children: <Widget>[
+                                Text(
+                                  'نص',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 14,
+                                ),
+                                Image.asset(
+                                  'assets/image/text.png',
+                                  width: 32,
+                                  height: 32,
+                                ),
+                              ],
+                            ),
+                          ),
+                          onTap: () {
+                            setState(() {
+                              isTextInput = !isTextInput;
+                              _activeItem = null;
+                            });
+
+                            if (currentText.isNotEmpty) {
+                              setState(() {
+                                stackData.add(EditableItem()
+                                  ..type = ItemType.Text
+                                  ..value = currentText
+                                  ..color = currentColor
+                                  ..textStyle = currentTextStyle
+                                  ..fontSize = currentFontSize
+                                  ..fontFamily = currentFontFamily);
+                                currentText = "";
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ),
+                ],
               ),
             ),
+            // زر المسح
             Visibility(
               visible: !isTextInput,
               child: Visibility(
@@ -469,19 +509,22 @@ class _StoryDesignerState extends State<StoryDesigner> {
                   child: Container(
                     width: screen.width,
                     child: Center(
-                        child: Container(
-                      height: !isDeletePosition ? 60.0 : 100,
-                      width: !isDeletePosition ? 60.0 : 100,
-                      decoration: BoxDecoration(
+                      child: Container(
+                        height: !isDeletePosition ? 60.0 : 100,
+                        width: !isDeletePosition ? 60.0 : 100,
+                        decoration: BoxDecoration(
                           color: Colors.black.withOpacity(0.5),
                           borderRadius: BorderRadius.all(
-                              Radius.circular(!isDeletePosition ? 30 : 50))),
-                      child: Icon(
-                        Icons.delete,
-                        color: Colors.white,
-                        size: !isDeletePosition ? 30 : 50,
+                            Radius.circular(!isDeletePosition ? 30 : 50),
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.delete,
+                          color: Colors.white,
+                          size: !isDeletePosition ? 30 : 50,
+                        ),
                       ),
-                    )),
+                    ),
                   ),
                 ),
               ),
