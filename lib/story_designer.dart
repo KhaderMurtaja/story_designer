@@ -397,8 +397,8 @@ class _StoryDesignerState extends State<StoryDesigner> {
                 child: Positioned(
                   top: 50,
                   right: 20,
-                  child: TextButton(
-                    onPressed: () async {
+                  child: InkWell(
+                    onTap: () async {
                       //done: save image and return captured image to previous screen
 
                       RenderRepaintBoundary boundary =
@@ -418,25 +418,41 @@ class _StoryDesignerState extends State<StoryDesigner> {
                         Navigator.of(context).pop(imgFile);
                       });
                     },
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                        ),
-                      ),
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                        Colors.blue.withOpacity(0.7),
-                      ),
-                    ),
+                    // style: ButtonStyle(
+                    //   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    //     RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.all(
+                    //         Radius.circular(10),
+                    //       ),
+                    //     ),
+                    //   ),
+                    //   backgroundColor: MaterialStateProperty.all<Color>(
+                    //     Colors.blue.withOpacity(0.7),
+                    //   ),
+                    // ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          'Done',
-                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        Container(
+                          alignment: Alignment.center,
+                          height: 40.0,
+                          width: 130,
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: Color(0xFF0BCC83),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                          child: Text(
+                            'مشاركة',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ],
                     ),
