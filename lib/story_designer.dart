@@ -2,26 +2,32 @@ library story_designer;
 
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
-
-import 'dart:ui' as ui;
-
 import 'package:story_designer/widgets/go_back.dart';
 
-class StoryDesigner extends StatefulWidget {
-  StoryDesigner({
-    Key key,
-    this.filePath,
-  }) : super(key: key);
+class EditableItem {
+  Offset position = Offset(0.4, 0.4);
+  double scale = 1.0;
+  double rotation = 0.0;
+  ItemType type;
+  String value;
+  Color color;
+  int textStyle;
+  double fontSize;
+  int fontFamily;
+}
 
+enum ItemType { Image, Text }
+
+class StoryDesigner extends StatefulWidget {
   final String filePath;
+  StoryDesigner({Key key, this.filePath}) : super(key: key);
 
   @override
   _StoryDesignerState createState() => _StoryDesignerState();
@@ -32,25 +38,18 @@ class _StoryDesignerState extends State<StoryDesigner> {
 
   // ActiceItem
   EditableItem _activeItem;
-
   // item initial position
   Offset _initPos;
-
   // item current position
   Offset _currentPos;
-
   // item current scale
   double _currentScale;
-
   // item current rotation
   double _currentRotation;
-
   // is item in action
   bool _inAction = false;
-
   // List of all editableitems
   List<EditableItem> stackData = [];
-
   // is textfield shown
   bool isTextInput = false;
   // current textfield text
@@ -59,12 +58,10 @@ class _StoryDesignerState extends State<StoryDesigner> {
   Color currentColor = Color(0xffffffff);
   // current textfield colorpicker color
   Color pickerColor = Color(0xffffffff);
-
   // current textfield style
   int currentTextStyle = 0;
   // current textfield fontsize
   double currentFontSize = 26.0;
-
   // current textfield fontfamily list
   List<String> fontFamilyList = [
     "Lato",
@@ -79,18 +76,8 @@ class _StoryDesignerState extends State<StoryDesigner> {
   ];
   // current textfield fontfamily
   int currentFontFamily = 0;
-
   // is activeitem moved to delete position
   bool isDeletePosition = false;
-
-  @override
-  void initState() {
-    stackData.add(EditableItem()
-      ..type = ItemType.Image
-      ..value = widget.filePath);
-
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +103,6 @@ class _StoryDesignerState extends State<StoryDesigner> {
               final delta = details.focalPoint - _initPos;
               final left = (delta.dx / screen.width) + _currentPos.dx;
               final top = (delta.dy / screen.height) + _currentPos.dy;
-
               setState(() {
                 _activeItem.position = Offset(left, top);
                 _activeItem.rotation = details.rotation + _currentRotation;
@@ -128,16 +114,17 @@ class _StoryDesignerState extends State<StoryDesigner> {
                 isTextInput = !isTextInput;
                 _activeItem = null;
               });
-
               if (currentText.isNotEmpty) {
                 setState(() {
-                  stackData.add(EditableItem()
-                    ..type = ItemType.Text
-                    ..value = currentText
-                    ..color = currentColor
-                    ..textStyle = currentTextStyle
-                    ..fontSize = currentFontSize
-                    ..fontFamily = currentFontFamily);
+                  stackData.add(
+                    EditableItem()
+                      ..type = ItemType.Text
+                      ..value = currentText
+                      ..color = currentColor
+                      ..textStyle = currentTextStyle
+                      ..fontSize = currentFontSize
+                      ..fontFamily = currentFontFamily,
+                  );
                   currentText = "";
                 });
               }
@@ -152,11 +139,7 @@ class _StoryDesignerState extends State<StoryDesigner> {
                       Visibility(
                         visible: stackData[0].type == ItemType.Image,
                         child: Center(
-                          child: Image.file(
-                            new File(
-                              stackData[0].value,
-                            ),
-                          ),
+                          child: Image.file(new File(stackData[0].value)),
                         ),
                       ),
                       ...stackData.map(_buildItemWidget).toList(),
@@ -200,8 +183,8 @@ class _StoryDesignerState extends State<StoryDesigner> {
                                         fontSize: currentFontSize,
                                       ),
                                       cursorColor: currentColor,
-                                      maxLines: 3,
                                       minLines: 1,
+                                      maxLines: 3,
                                       decoration: InputDecoration(
                                         border: new UnderlineInputBorder(
                                           borderSide: new BorderSide(
@@ -214,24 +197,27 @@ class _StoryDesignerState extends State<StoryDesigner> {
                                           ),
                                         ),
                                       ),
-                                      onChanged: (input) =>
-                                          setState(() => currentText = input),
+                                      onChanged: (input) {
+                                        setState(() => currentText = input);
+                                      },
                                       onSubmitted: (input) {
                                         if (input.isNotEmpty) {
                                           setState(() {
-                                            stackData.add(EditableItem()
-                                              ..type = ItemType.Text
-                                              ..value = currentText
-                                              ..color = currentColor
-                                              ..textStyle = currentTextStyle
-                                              ..fontSize = currentFontSize
-                                              ..fontFamily = currentFontFamily);
+                                            stackData.add(
+                                              EditableItem()
+                                                ..type = ItemType.Text
+                                                ..value = currentText
+                                                ..color = currentColor
+                                                ..textStyle = currentTextStyle
+                                                ..fontSize = currentFontSize
+                                                ..fontFamily =
+                                                    currentFontFamily,
+                                            );
                                             currentText = "";
                                           });
                                         } else {
                                           setState(() => currentText = "");
                                         }
-
                                         setState(() {
                                           isTextInput = !isTextInput;
                                           _activeItem = null;
@@ -272,7 +258,7 @@ class _StoryDesignerState extends State<StoryDesigner> {
                                                         pickerColor = color;
                                                       });
                                                     },
-                                                    showLabel: true,
+                                                    labelTypes: [],
                                                     pickerAreaHeightPercent:
                                                         0.8,
                                                   ),
@@ -281,9 +267,10 @@ class _StoryDesignerState extends State<StoryDesigner> {
                                                   TextButton(
                                                     child: const Text('Got it'),
                                                     onPressed: () {
-                                                      setState(() =>
-                                                          currentColor =
-                                                              pickerColor);
+                                                      setState(() {
+                                                        currentColor =
+                                                            pickerColor;
+                                                      });
                                                       Navigator.of(ctx).pop();
                                                     },
                                                   ),
@@ -316,10 +303,12 @@ class _StoryDesignerState extends State<StoryDesigner> {
                                                   ),
                                                 )
                                               : BoxDecoration(),
-                                          child: Icon(Icons.auto_awesome,
-                                              color: currentTextStyle != 2
-                                                  ? Colors.white
-                                                  : Colors.black),
+                                          child: Icon(
+                                            Icons.auto_awesome,
+                                            color: currentTextStyle != 2
+                                                ? Colors.white
+                                                : Colors.black,
+                                          ),
                                         ),
                                         onPressed: () {
                                           if (currentTextStyle < 2) {
@@ -351,8 +340,11 @@ class _StoryDesignerState extends State<StoryDesigner> {
                                         activeColor: Colors.white,
                                         inactiveColor:
                                             Colors.white.withOpacity(0.4),
-                                        onChanged: (input) => setState(
-                                            () => currentFontSize = input)),
+                                        onChanged: (input) {
+                                          setState(() {
+                                            currentFontSize = input;
+                                          });
+                                        }),
                                   ),
                                 ),
                               ),
@@ -365,40 +357,43 @@ class _StoryDesignerState extends State<StoryDesigner> {
                                     height: 40,
                                     alignment: Alignment.center,
                                     child: ListView.builder(
-                                        itemCount: fontFamilyList.length,
-                                        shrinkWrap: true,
-                                        scrollDirection: Axis.horizontal,
-                                        itemBuilder: (context, index) {
-                                          return GestureDetector(
-                                            onTap: () => setState(() =>
-                                                currentFontFamily = index),
-                                            child: Container(
-                                              height: 40,
-                                              width: 40,
-                                              alignment: Alignment.center,
-                                              decoration: BoxDecoration(
-                                                color:
-                                                    index == currentFontFamily
-                                                        ? Colors.white
-                                                        : Colors.black,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(20),
-                                                ),
-                                              ),
-                                              child: Text(
-                                                'Aa',
-                                                style: GoogleFonts.getFont(
-                                                  fontFamilyList[index],
-                                                ).copyWith(
-                                                  color:
-                                                      index == currentFontFamily
-                                                          ? Colors.black
-                                                          : Colors.white,
-                                                ),
+                                      itemCount: fontFamilyList.length,
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (context, index) {
+                                        return GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              currentFontFamily = index;
+                                            });
+                                          },
+                                          child: Container(
+                                            height: 40,
+                                            width: 40,
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              color: index == currentFontFamily
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(20),
                                               ),
                                             ),
-                                          );
-                                        }),
+                                            child: Text(
+                                              'Aa',
+                                              style: GoogleFonts.getFont(
+                                                fontFamilyList[index],
+                                              ).copyWith(
+                                                color:
+                                                    index == currentFontFamily
+                                                        ? Colors.black
+                                                        : Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ),
                                 ),
                               ),
@@ -419,7 +414,7 @@ class _StoryDesignerState extends State<StoryDesigner> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
-                          // زر المشاركة
+                          // Share Btn
                           Visibility(
                             visible: !isTextInput,
                             child: Visibility(
@@ -427,10 +422,10 @@ class _StoryDesignerState extends State<StoryDesigner> {
                               child: InkWell(
                                 onTap: () async {
                                   //done: save image and return captured image to previous screen
-
                                   RenderRepaintBoundary boundary =
                                       previewContainer.currentContext
-                                          .findRenderObject();
+                                              .findRenderObject()
+                                          as RenderRepaintBoundary;
                                   ui.Image image = await boundary.toImage();
                                   final directory =
                                       (await getApplicationDocumentsDirectory())
@@ -441,9 +436,11 @@ class _StoryDesignerState extends State<StoryDesigner> {
                                       byteData.buffer.asUint8List();
                                   print(pngBytes);
 
-                                  File imgFile = new File('$directory/' +
-                                      DateTime.now().toString() +
-                                      '.png');
+                                  File imgFile = new File(
+                                    '$directory/' +
+                                        DateTime.now().toString() +
+                                        '.png',
+                                  );
                                   imgFile.writeAsBytes(pngBytes).then((value) {
                                     // done: return imgFile
                                     Navigator.of(context).pop(imgFile);
@@ -465,7 +462,7 @@ class _StoryDesignerState extends State<StoryDesigner> {
                                         ),
                                       ),
                                       child: Text(
-                                        'مشاركة',
+                                        'Share',
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 20,
@@ -478,7 +475,7 @@ class _StoryDesignerState extends State<StoryDesigner> {
                               ),
                             ),
                           ),
-                          // إضافة نص
+                          // Add Text
                           Visibility(
                             visible: !isTextInput,
                             child: InkWell(
@@ -487,7 +484,7 @@ class _StoryDesignerState extends State<StoryDesigner> {
                                 child: Row(
                                   children: <Widget>[
                                     Text(
-                                      'أضافة نص',
+                                      'Add Text',
                                       style: TextStyle(
                                         fontSize: 20,
                                         color: Colors.white,
@@ -509,16 +506,17 @@ class _StoryDesignerState extends State<StoryDesigner> {
                                   isTextInput = !isTextInput;
                                   _activeItem = null;
                                 });
-
                                 if (currentText.isNotEmpty) {
                                   setState(() {
-                                    stackData.add(EditableItem()
-                                      ..type = ItemType.Text
-                                      ..value = currentText
-                                      ..color = currentColor
-                                      ..textStyle = currentTextStyle
-                                      ..fontSize = currentFontSize
-                                      ..fontFamily = currentFontFamily);
+                                    stackData.add(
+                                      EditableItem()
+                                        ..type = ItemType.Text
+                                        ..value = currentText
+                                        ..color = currentColor
+                                        ..textStyle = currentTextStyle
+                                        ..fontSize = currentFontSize
+                                        ..fontFamily = currentFontFamily,
+                                    );
                                     currentText = "";
                                   });
                                 }
@@ -530,7 +528,7 @@ class _StoryDesignerState extends State<StoryDesigner> {
                     ],
                   ),
                 ),
-                // زر المسح
+                // Delete Button
                 Visibility(
                   visible: !isTextInput,
                   child: Visibility(
@@ -568,6 +566,16 @@ class _StoryDesignerState extends State<StoryDesigner> {
     );
   }
 
+  @override
+  void initState() {
+    stackData.add(
+      EditableItem()
+        ..type = ItemType.Image
+        ..value = widget.filePath,
+    );
+    super.initState();
+  }
+
   Widget _buildItemWidget(EditableItem e) {
     final screen = MediaQuery.of(context).size;
     // double centerHeightPosition = screen.height/2;
@@ -578,7 +586,7 @@ class _StoryDesignerState extends State<StoryDesigner> {
       case ItemType.Text:
         if (e.textStyle == 0) {
           widget = Text(
-            e.value,
+            e.value.toString(),
             style: GoogleFonts.getFont(fontFamilyList[e.fontFamily])
                 .copyWith(color: e.color, fontSize: e.fontSize),
           );
@@ -589,7 +597,7 @@ class _StoryDesignerState extends State<StoryDesigner> {
                 color: Colors.black.withOpacity(1.0),
                 borderRadius: BorderRadius.all(Radius.circular(4))),
             child: Text(
-              e.value,
+              e.value.toString(),
               style: GoogleFonts.getFont(fontFamilyList[e.fontFamily])
                   .copyWith(color: e.color, fontSize: e.fontSize),
             ),
@@ -601,14 +609,14 @@ class _StoryDesignerState extends State<StoryDesigner> {
                 color: Colors.white.withOpacity(1.0),
                 borderRadius: BorderRadius.all(Radius.circular(4))),
             child: Text(
-              e.value,
+              e.value.toString(),
               style: GoogleFonts.getFont(fontFamilyList[e.fontFamily])
                   .copyWith(color: e.color, fontSize: e.fontSize),
             ),
           );
         } else {
           widget = Text(
-            e.value,
+            e.value.toString(),
             style: GoogleFonts.getFont(fontFamilyList[e.fontFamily])
                 .copyWith(color: e.color, fontSize: e.fontSize),
           );
@@ -616,10 +624,12 @@ class _StoryDesignerState extends State<StoryDesigner> {
         break;
       case ItemType.Image:
         widget = Center();
+        break;
+      default:
+        widget = Container();
     }
 
     // e.position = Offset(centerHeightPosition, centerWidthPosition);
-
     return Positioned(
       top: e.position.dy * screen.height,
       left: e.position.dx * screen.width,
@@ -641,32 +651,23 @@ class _StoryDesignerState extends State<StoryDesigner> {
             },
             onPointerUp: (details) {
               _inAction = false;
-              print("e.position.dy: " + e.position.dy.toString());
-              print("e.position.dx: " + e.position.dx.toString());
               if (e.position.dy >= 0.8 &&
                   e.position.dx >= 0.0 &&
                   e.position.dx <= 1.0) {
-                print('Delete the Item');
-
                 setState(() {
                   stackData.removeAt(stackData.indexOf(e));
                   _activeItem = null;
                 });
               }
-
               setState(() {
                 _activeItem = null;
               });
             },
             onPointerCancel: (details) {},
             onPointerMove: (details) {
-              print("e.position.dy: " + e.position.dy.toString());
-              print("e.position.dx: " + e.position.dx.toString());
               if (e.position.dy >= 0.8 &&
                   e.position.dx >= 0.0 &&
                   e.position.dx <= 1.0) {
-                print('Delete the Item');
-
                 setState(() {
                   isDeletePosition = true;
                 });
@@ -682,18 +683,4 @@ class _StoryDesignerState extends State<StoryDesigner> {
       ),
     );
   }
-}
-
-enum ItemType { Image, Text }
-
-class EditableItem {
-  Offset position = Offset(0.4, 0.4);
-  double scale = 1.0;
-  double rotation = 0.0;
-  ItemType type;
-  String value;
-  Color color;
-  int textStyle;
-  double fontSize;
-  int fontFamily;
 }

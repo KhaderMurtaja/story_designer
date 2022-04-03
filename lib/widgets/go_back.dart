@@ -5,17 +5,10 @@ class GoBack extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      child: Icon(
-        Icons.arrow_back,
-        size: 28,
-        color: Colors.white,
-      ),
+      child: Icon(Icons.arrow_back, size: 28, color: Colors.white),
       onTap: () {
-        if (Navigator.canPop(context)) {
-          Navigator.pop(context);
-        } else {
-          SystemNavigator.pop();
-        }
+        if (Navigator.canPop(context)) Navigator.pop(context);
+        SystemNavigator.pop();
       },
     );
   }
